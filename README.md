@@ -1,59 +1,182 @@
-# Notionapp
+# Notion App - Multi-Tab Session Tracker
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.4.
+An Angular application that demonstrates reliable session presence tracking across multiple browser tabs and devices using Supabase authentication and a three-state presence model.
 
-## Development server
+## 🎯 What This App Does
 
-To start a local development server, run:
+Track which browser tabs are active, idle, or stale across multiple devices while logged into your account. See real-time session information grouped by device with intelligent presence detection that doesn't flicker.
 
-```bash
-ng serve
-```
+**Key Features:**
+- ✅ Secure authentication (Supabase Auth)
+- ✅ Multi-tab tracking with unique IDs per tab and device
+- ✅ Three-state presence model (Active → Idle → Stale)
+- ✅ Real-time heartbeat every 30 seconds
+- ✅ 5-second UI refresh for instant feedback
+- ✅ No unload event reliance (graceful background handling)
+- ✅ Responsive grid layout
+- ✅ Color-coded tab states
+- ✅ Smart "last seen" timestamps
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 🚀 Quick Start
 
-## Code scaffolding
+### Prerequisites
+- Node.js 18+
+- npm 11.6.0+
+- Modern browser (Chrome, Firefox, Safari, Edge)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+### Installation & Run
 
 ```bash
-ng build
+# Navigate to project
+cd e:\Projects\Notion\notionapp
+
+# Install dependencies
+npm install
+
+# Start development server
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+The app will open at `http://localhost:4200`
 
-## Running unit tests
+## 📖 Documentation
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+- **[QUICKSTART.md](QUICKSTART.md)** - Setup and testing guide
+- **[VISUAL_GUIDE.md](VISUAL_GUIDE.md)** - UI screenshots and behavior
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System design and data flow
+- **[IMPLEMENTATION_CHECKLIST.md](IMPLEMENTATION_CHECKLIST.md)** - What's implemented
+
+## 🎨 Visual Overview
+
+### Pages
+1. **Login** (`/login`) - Sign in with email/password
+2. **Signup** (`/signup`) - Create new account
+3. **Dashboard** (`/app`) - Main app showing active tabs (protected route)
+
+### Dashboard Features
+- Header with active tab count and sign out
+- Device groups (responsive grid)
+- Tab cards with color-coded states:
+  - 🟢 **Active** - Tab in focus or recently used (green)
+  - 🟠 **Idle** - 5-30 min of inactivity (orange)
+  - ⚫ **Stale** - 30+ min abandoned (gray)
+- Tab details: state, last seen, user agent
+- [CURRENT] badge on active tab
+
+## 🔧 Architecture
+
+### Services
+- **AuthService** - Supabase authentication
+- **SessionService** - Device/tab ID management
+- **PresenceService** - Activity tracking & heartbeat
+
+### Components
+- **LoginComponent** - Sign in
+- **SignupComponent** - Sign up
+- **DashboardComponent** - Tab tracker (protected)
+
+### Guards
+- **authGuard** - Route protection
+
+## 💾 Database
+
+Supabase `user_tabs` table stores:
+- user_id, device_id, tab_id (composite key)
+- is_active, last_seen, user_agent, created_at
+
+## 🧪 Testing
+
+### Test Same Browser
+1. Open dashboard in Tab A
+2. Open in Tab B
+3. Both show in dashboard, grouped by device
+4. Switch tabs - [CURRENT] badge moves
+
+### Test Multiple Devices
+1. Open on Device A
+2. Open on Device B with same account
+3. Dashboard shows tabs grouped by device ID
+
+### Test State Transitions
+1. Open tab → ACTIVE (green)
+2. Wait 5+ min → IDLE (orange)
+3. Wait 30+ min → STALE (gray)
+4. Click tab → ACTIVE again (instant)
+
+## ⚙️ Configuration
+
+Supabase setup in `src/environments/environment.ts`:
+```typescript
+export const environment = {
+  supabaseUrl: 'https://zqpezexjcilfatwgbduv.supabase.co',
+  supabaseKey: 'your-public-anon-key'
+};
+```
+
+## 🎯 Presence Strategy
+
+**Three-State Model** prevents flickering:
+- **Active** (<5 min): Currently in use
+- **Idle** (5-30 min): Background tab
+- **Stale** (30+ min): Likely abandoned
+
+**Why this works:**
+- Smooth transitions (no rapid flickering)
+- Realistic user behavior
+- Tolerates browser throttling
+- Clear visual feedback
+
+## 🏗️ Project Structure
+
+```
+src/app/
+├── services/
+│   ├── auth.service.ts
+│   ├── session.service.ts
+│   └── presence.service.ts
+├── pages/
+│   ├── login/
+│   ├── signup/
+│   └── dashboard/
+├── guards/
+│   └── auth.guard.ts
+├── app.ts (root component)
+└── app.routes.ts (routing)
+```
+
+## 🚀 Build & Deploy
 
 ```bash
-ng test
+# Production build
+npm run build
+
+# Output in dist/notionapp/
 ```
 
-## Running end-to-end tests
+## 📝 Key Implementation Details
 
-For end-to-end (e2e) testing, run:
+- **localStorage** - deviceId (persists across tabs)
+- **sessionStorage** - tabId (unique per tab)
+- **Activity tracking** - Focus, visibility, interactions
+- **Heartbeat** - 30-second sync to database
+- **UI refresh** - 5-second poll for updates
 
-```bash
-ng e2e
-```
+## 🐛 Troubleshooting
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+**Blank page?** → Check DevTools (F12) → Console for errors  
+**Tabs not showing?** → Refresh page, check network  
+**Not seeing other tabs?** → Open another tab, wait 5 seconds
 
-## Additional Resources
+## 🎓 Demonstrates
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Angular 21 standalone components
+- Functional route guards
+- RxJS Observables/Subjects
+- Supabase integration
+- Real-time database sync
+- State management patterns
+- Responsive design
+
+---
+
+**Ready to see it in action?** → Run `npm start` and open http://localhost:4200
