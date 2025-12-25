@@ -28,7 +28,7 @@ Track which browser tabs are active, idle, or stale across multiple devices whil
 
 ```bash
 # Navigate to project
-cd e:\Projects\Notion\notionapp
+cd notionapp
 
 # Install dependencies
 npm install
@@ -38,15 +38,6 @@ npm start
 ```
 
 The app will open at `http://localhost:4200`
-
-## 📖 Documentation
-
-- **[QUICKSTART.md](QUICKSTART.md)** - Setup and testing guide
-- **[VISUAL_GUIDE.md](VISUAL_GUIDE.md)** - UI screenshots and behavior
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System design and data flow
-- **[IMPLEMENTATION_CHECKLIST.md](IMPLEMENTATION_CHECKLIST.md)** - What's implemented
-
-## 🎨 Visual Overview
 
 ### Pages
 1. **Login** (`/login`) - Sign in with email/password
@@ -109,7 +100,7 @@ Supabase setup in `src/environments/environment.ts`:
 ```typescript
 export const environment = {
   supabaseUrl: 'https://zqpezexjcilfatwgbduv.supabase.co',
-  supabaseKey: 'your-public-anon-key'
+  supabaseKey: '[API_KEY]'
 };
 ```
 
